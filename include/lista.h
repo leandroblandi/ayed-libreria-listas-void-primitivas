@@ -10,8 +10,8 @@ typedef struct Lista* ListaPtr;
 
 // Constructor y destructor
 
-/// @brief Crea una nueva lista vacía con el tamaño del dato especificado mediante sizeof(...)
-ListaPtr crearLista(int sizeOfTipoDato);
+/// @brief Crea una nueva lista vacía
+ListaPtr crearLista();
 
 /// @brief Elimina la lista con sus nodos, liberando la memoria recursivamente
 void liberarLista(ListaPtr lista);
@@ -38,9 +38,6 @@ void insertarEnPosicion(ListaPtr lista, DatoPtr dato, int posicion);
 
 
 // Getters
-
-/// @brief Obtiene el sizeof(...) del tipo de dato que almacena la lista
-int getSizeOfTipoDato(ListaPtr lista);
 
 /// @brief Obtiene el primer nodo de una lista no nula
 NodoPtr getPrimero(ListaPtr lista);
@@ -69,5 +66,11 @@ void eliminarEnPosicion(ListaPtr lista, int posicion);
 /// @brief Elimina un nodo no nulo pasado por parámetro de una lista no nula. El metodo de esta eliminacion es por
 /// comparación de dirección de memoria
 void eliminar(ListaPtr lista, NodoPtr nodo);
+
+/// @brief Elimina un nodo no nulo pasado pr parametro de una lista no nula que cumpla X condicion, siendo esa condicion
+/// dictada por la funcion callback condicion(DatoPtr)
+void eliminarPorCondicion(ListaPtr lista, int(*condicion)(DatoPtr));
+
+float realizarCalculoEntreNodos(ListaPtr lista, float(*calculo)(DatoPtr, DatoPtr));
 
 #endif // LISTA_H_INCLUDED

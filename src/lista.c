@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lista.h"
+#include "../include/lista.h"
 
 struct Lista {
     NodoPtr primero;
     int largo;
-    int sizeOfTipoDato;
 };
 
-ListaPtr crearLista(int sizeOfTipoDato) {
+ListaPtr crearLista() {
     ListaPtr lista = (ListaPtr) malloc(sizeof(struct Lista));
 
     if (!lista) {
@@ -18,7 +17,6 @@ ListaPtr crearLista(int sizeOfTipoDato) {
 
     lista->primero = NULL;
     lista->largo = 0;
-    lista->sizeOfTipoDato = sizeOfTipoDato;
 
     return lista;
 }
@@ -107,13 +105,13 @@ void insertarPrimero(ListaPtr lista, DatoPtr dato) {
     NodoPtr nuevoNodo;
 
     if (lista->primero) {
-        nuevoNodo = crearNodo(dato, lista->sizeOfTipoDato, lista->primero);
+        nuevoNodo = crearNodo(dato, lista->primero);
         lista->primero = nuevoNodo;
         lista->largo++;
         return;
     }
 
-    nuevoNodo = crearNodo(dato, lista->sizeOfTipoDato, NULL);
+    nuevoNodo = crearNodo(dato, NULL);
     lista->primero = nuevoNodo;
     lista->largo++;
 }
@@ -135,7 +133,7 @@ void insertarUltimo(ListaPtr lista, DatoPtr dato) {
         return;
     }
 
-    NodoPtr nuevoNodo = crearNodo(dato, lista->sizeOfTipoDato, NULL);
+    NodoPtr nuevoNodo = crearNodo(dato, NULL);
     setSiguiente(nodoUltimo, nuevoNodo);
     lista->largo++;
 }
@@ -170,16 +168,8 @@ void insertarEnPosicion(ListaPtr lista, DatoPtr dato, int posicion) {
         }
 
         // seteo la siguiente posicion, q es la deseada, y muevo el nodo al siguiente
-        setSiguiente(actual, crearNodo(dato, lista->sizeOfTipoDato, getSiguiente(actual)));
+        setSiguiente(actual, crearNodo(dato, getSiguiente(actual)));
     }
-}
-
-int getSizeOfTipoDato(ListaPtr lista) {
-    if (!lista) {
-        return -1;
-    }
-
-    return lista->sizeOfTipoDato;
 }
 
 NodoPtr getPrimero(ListaPtr lista) {
@@ -216,6 +206,9 @@ NodoPtr getUltimo(ListaPtr lista) {
     NodoPtr nodoActual = lista->primero;
 
     while (nodoActual) {
+        if (getSiguiente(nodoActual) == NULL) {
+            break;
+        }
         nodoActual = getSiguiente(nodoActual);
     }
 
@@ -391,5 +384,48 @@ void eliminar(ListaPtr lista, NodoPtr nodo) {
 
         nodoActual = nodoProximo;
     }
+}
 
+void eliminarPorCondicion(ListaPtr lista, int(*condicion)(DatoPtr)) {
+    if (!lista || lista->primero == NULL || lista->largo == 0) {
+        printf("\nLa lista esta vacia");
+        return;
+    }
+
+    NodoPtr nodoActual = lista->primero;
+
+    // si elimino el nodo actual, no va a haber forma de seguir recorriendo, entonces almaceno por las dudas
+    // el nodo proximo, y si tengo q eliminar el actual, no pierdo la referencia
+    while (nodoActual) {
+        NodoPtr nodoProximo = getSiguiente(nodoActual);
+
+        if (condicion(getDato(nodoActual))) {
+            eliminar(lista, nodoActual);
+        }
+
+        nodoActual = nodoProximo;
+    }
+}
+
+float realizarCalculoEntreNodos(ListaPtr lista, float(*calculo)(DatoPtr, DatoPtr)) {
+     if (!lista || !calculo) {
+         return -999.00f;
+     }
+
+    NodoPtr nodoActual = lista->primero;
+    float sumatoria = 0.0f;
+
+    while (nodoActual) {
+        NodoPtr nodoProximo = getSiguiente(nodoActual);
+
+        if (nodoProximo != NULL) {
+            DatoPtr d1 = getDato(nodoActual);
+            DatoPtr d2 = getDato(nodoProximo);
+            sumatoria = sumatoria + calculo(d1, d2);
+        }
+
+        nodoActual = nodoProximo;
+    }
+
+    return sumatoria;
 }

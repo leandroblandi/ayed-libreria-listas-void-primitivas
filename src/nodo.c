@@ -1,24 +1,22 @@
 #include <stdlib.h>
-#include <string.h>
-#include "nodo.h"
+#include "../include/nodo.h"
 
 struct Nodo {
     DatoPtr dato;
     NodoPtr siguiente;
 };
 
-NodoPtr crearNodo(DatoPtr dato, int sizeOfTipoDato, NodoPtr siguiente) {
+NodoPtr crearNodo(DatoPtr dato, NodoPtr siguiente) {
     NodoPtr nodo = (NodoPtr) malloc(sizeof(struct Nodo));
 
     if (!nodo) {
         return nodo;
     }
 
-    nodo->dato = malloc(sizeOfTipoDato);
+    nodo->dato = dato;
     nodo->siguiente = siguiente;
-    memcpy(nodo->dato, dato, sizeOfTipoDato);
 
-    return nodo; 
+    return nodo;
 };
 
 void liberarNodo(NodoPtr nodo) {

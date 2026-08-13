@@ -10,7 +10,7 @@ typedef void* DatoPtr;
 // Constructor y Destructor
 
 /// @brief Crea un nuevo nodo con el dato especificado y un nodo siguiente que podrá ser nulo
-NodoPtr crearNodo(DatoPtr dato, int sizeOfTipoDato, NodoPtr siguiente);
+NodoPtr crearNodo(DatoPtr dato, NodoPtr siguiente);
 
 /// @brief Libera de la memoria un nodo especificado por parámetro, el mismo no debe ser nulo
 void liberarNodo(NodoPtr nodo);
